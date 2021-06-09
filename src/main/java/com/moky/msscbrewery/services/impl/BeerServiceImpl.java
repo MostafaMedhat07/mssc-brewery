@@ -2,6 +2,7 @@ package com.moky.msscbrewery.services.impl;
 
 import com.moky.msscbrewery.services.BeerService;
 import com.moky.msscbrewery.web.model.BeerDto;
+import com.moky.msscbrewery.web.model.BeerStypeEnum;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -13,12 +14,17 @@ public class BeerServiceImpl implements BeerService {
         return BeerDto.builder().
                 beerId(UUID.randomUUID()).
                 beerName("Mostafa Beer").
-                beerStyle("Mostafa Style").
+                beerStyle(BeerStypeEnum.SAISON).
                 build();
     }
 
     @Override
     public BeerDto saveNewBeer(BeerDto beerDto) {
         return BeerDto.builder().beerId(UUID.randomUUID()).build();
+    }
+
+    @Override
+    public void updateBeer(UUID beerId, BeerDto beerDto) {
+        //todo impl
     }
 }
