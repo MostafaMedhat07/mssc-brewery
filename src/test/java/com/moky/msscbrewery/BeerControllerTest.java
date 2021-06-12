@@ -1,17 +1,20 @@
 package com.moky.msscbrewery;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moky.msscbrewery.services.BeerService;
 import com.moky.msscbrewery.web.controllers.BeerController;
+import com.moky.msscbrewery.web.model.BeerDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BeerController.class)
@@ -20,6 +23,13 @@ class BeerControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @MockBean
+    BeerService beerService;
+
+
     @Test
     void getBeer() throws Exception {
         mockMvc.perform(get("/api/v1/beer/" + UUID.randomUUID().toString()).accept(MediaType.APPLICATION_JSON))
@@ -27,7 +37,14 @@ class BeerControllerTest {
     }
 
     @Test
-    void createNewBeer() {
+    void createNewBeer() throws Exception {
+        BeerDto beerDto = BeerDto.builder()
+                .beerId(UUID.randomUUID())
+                .beerName("MOKY").
+                build();
+        String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+        mockMvc.perform(post("/api/v1/beer/").accept(MediaType.APPLICATION_JSON).content(beerDtoJson))
+                .andExpect(status().isCreated());
     }
 
     @Test
